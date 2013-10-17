@@ -21,17 +21,46 @@ app.get('/topic/:id', function(req, res, next) {
 	storage.get(req.params.id, function(err, doc) {
 		if (err)
 			throw err;
-		res.send(doc ? doc : 404);
+		if (!doc) {
+			res.send(404);
+		} else {
+			delete doc['adminKey'];
+			res.send(doc);
+		}
 	});
 });
 
 app.post('/topic', function(req, res, next) {
-	storage.add(req.body, function(err, docs) {
+	var topic = req.body;
+	topic.adminKey = Math.random().toString(36).slice(-8);
+
+	storage.add(topic, function(err, docs) {
 		if (err)
 			throw err;
 		res.send({
-			'id': docs[0]._id
+			'id': docs[0]._id,
+			'adminKey': docs[0].adminKey
 		});
+	});
+});
+
+app.post('/topic/:id', function(req, res, next) {
+	storage.get(req.params.id, function(err, doc) {
+		if (err)
+			throw err;
+		if (!doc) {
+			res.send(404);
+		} else if (doc.adminKey !== req.query.a) {
+			res.send(401);
+		} else {
+			storage.update(req.params.id, req.body, function(err, docs) {
+				if (err)
+					throw err;
+				res.send({
+					'id': req.params.id
+				});
+			});
+		}
 	});
 });
 
