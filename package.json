@@ -1,0 +1,19 @@
+{
+  "name": "argufactum-backend",
+  "preferGlobal": false,
+  "version": "0.1.0",
+  "author": "Felix Ebert <felix.ebert@if-core.de>",
+  "description": "json storage for argufactum.de",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stadtlandcode/argufactum-backend"
+  },
+  "dependencies": {
+    "express": "3.x"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10"
+  }
+}
