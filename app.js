@@ -2,6 +2,10 @@ var express = require('express'), JsonStorage = require('./lib/JsonStorage.js');
 var app = express();
 var storage = new JsonStorage();
 
+// Middleware
+app.use(express.logger());
+app.use(express.bodyParser());
+
 // Routing
 app.all('*', function(req, res, next) {
 	res.header('Access-Control-Allow-Origin', '*');
@@ -19,10 +23,12 @@ app.get('/topic/:id', function(req, res, next) {
 });
 
 app.post('/topic', function(req, res, next) {
-	storage.add(req.body, function(err, doc) {
+	storage.add(req.body, function(err, docs) {
 		if (err)
 			throw err;
-		res.send(doc._id);
+		res.send({
+			'id': docs[0]._id
+		});
 	});
 });
 
@@ -35,11 +41,7 @@ var errorHandler = function(err, req, res, next) {
 		error: '500'
 	});
 };
-
-app.configure(function() {
-	app.use(app.router);
-	app.use(errorHandler);
-});
+app.use(errorHandler);
 
 // Start
 app.listen(8444, 'localhost');
