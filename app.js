@@ -2,6 +2,9 @@ var express = require('express'), JsonStorage = require('./lib/JsonStorage.js');
 var app = express();
 var storage = new JsonStorage();
 
+// Configuration
+app.enable('trust proxy');
+
 // Middleware
 app.use(express.logger());
 app.use(express.bodyParser());
